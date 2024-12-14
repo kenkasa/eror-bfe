@@ -50,7 +50,7 @@
 
   Execute ``install.sh`` on this directry.
   ```
-  cd /path/to/eror-dev
+  cd /path/to/eror-bfe
   ./install.sh
   ```
   Compiling EROR and ANATRA will start.
