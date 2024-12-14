@@ -34,10 +34,10 @@
   * Intel OneAPI in which ifort is available. (for ERmod and ANATRA) 
   * Login shell should be BASH (for ANATRA)
 
-## Library used in ANATRA
+## Libraries used in ANATRA
 
-  * xdrfile-1.1.4  
-	The library is distributed under the BSD License.
+  * xdrfile-1.1.4    
+        This library is distributed under the BSD License.
 	https://ftp.gromacs.org/pub/contrib/
 
   * xdr.F90  
@@ -59,7 +59,7 @@
   source ~/.bashrc
   ``` 
 
-## Basic Usage
+## Basic usage
 
   * [ANATRA](./packages/anatra/README.md)
   * EROR: see official [ERmod website](https://sourceforge.net/p/ermod/wiki/Home/) for the detailed description of the parameters common to ER and EROR.
