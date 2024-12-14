@@ -1,0 +1,29 @@
+FC=ifort
+HOME=.
+LIB=../lib
+EXEF=pm_analysis.x
+TRGT=pm_analysis
+
+OBJ=${LIB}/util.f90        \
+    ${LIB}/const.f90       \
+    ${LIB}/mtwist.f90      \
+    ${LIB}/random.f90      \
+    ${LIB}/akimautil.f90   \
+    ${LIB}/grid3d.f90      \
+    ${LIB}/voronoi.f90     \
+    ${LIB}/input.f90       \
+    ${LIB}/output.f90      \
+    ${LIB}/cv.f90          \
+    ${LIB}/bootstrap.f90   \
+    ${HOME}/pm_ctrl.f90    \
+    ${HOME}/pm_analyze.f90 \
+    ${HOME}/pm_main.f90
+
+all   : ${TRGT}
+clean :
+	rm ${SRC}*.o *.mod
+
+${TRGT} : ${OBJ} 
+	${FC} -qopenmp -o ${EXEF} ${OBJ}
+	cp ${EXEF} ../bin/
+	rm -f *.mod

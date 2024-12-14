@@ -1,0 +1,10 @@
+ ERmod 0.3.7, Copyright (C) 2000-2019 Nobuyuki Matubayasi
+                            2010-2019 Shun Sakuraba
+ ERmod comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you can redistribute it
+ and/or modify it under certain conditions.
+ See LICENSE file for details.
+Opening: "../../02_genesis_md/host-guest_in_water/run.dcd"...
+  Trying plugin "CHARMM,NAMD,XPLOR DCD Trajectory"...dcdplugin) detected standard 32-bit DCD file of native endianness
+dcdplugin) CHARMM format DCD file (also NAMD 2.1 and later)
+OK

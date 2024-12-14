@@ -1,0 +1,28 @@
+FC=ifort
+HOME=.
+MOVAVEHOME=../movave_analysis
+LIB=../lib
+EXEF=gderp_analysis.x
+TRGT=gderp_analysis
+
+OBJ=${LIB}/util.f90                  \
+    ${LIB}/const.f90                 \
+    ${LIB}/input.f90                 \
+    ${LIB}/output.f90                \
+    ${MOVAVEHOME}/movave_ctrl.f90    \
+    ${MOVAVEHOME}/movave_analyze.f90 \
+    ${HOME}/gderp_ctrl.f90           \
+		${HOME}/gderp_str.f90            \
+		${HOME}/gderp_forward.f90        \
+		${HOME}/gderp_backward.f90       \
+		${HOME}/gderp_analyze.f90        \
+		${HOME}/gderp_main.f90
+
+all   : ${TRGT}
+clean :
+	rm ${SRC}*.o *.mod
+
+${TRGT} : ${OBJ} 
+	${FC} -qopenmp -o ${EXEF} ${OBJ}
+	cp ${EXEF} ../bin/
+	rm -f *.mod

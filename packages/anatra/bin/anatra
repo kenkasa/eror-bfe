@@ -1,0 +1,99 @@
+#!/bin/bash
+
+opts=("$@")
+nopts=$#
+args=""
+for ((i=1;i<$nopts;i++));do
+  args="$args ${opts[$i]}"
+done
+script=${opts[0]}
+
+##########
+
+anas=("trjconv"     \
+      "distance"    \
+      "comcrd"      \
+      "rotation"    \
+      "rdf"         \
+      "sdf"         \
+      "rmsd"        \
+      "energy"      \
+      "strucsample" \
+      "lipidorder"  \
+      "area"        \
+      "z_deviation" \
+      "z_profile"   \
+      "z_orient"    \
+      "elecond"     \
+      "specfile")
+
+anas_abbrev=("tr" "pd" "cm" "rot" "rd" "sd" "sa" "rmsd" \
+          "en" "ss" "sc" "ap" "zd" "zp" "or" "elecond" "spec")
+
+exes=("trj_convert/tr_convert.tcl"           \
+      "pbcdist_analysis/pd_analysis.tcl"     \
+      "comcrd_analysis/cm_analysis.tcl"      \
+      "rot_analysis/rot_analysis.tcl"        \
+      "rdf_analysis/rd_analysis.tcl"         \
+      "sdf_analysis/sd_analysis.tcl"         \
+      "rmsd_analysis/rmsd_analysis.tcl"      \
+      "energy_analysis/en_analysis.tcl"      \
+      "strucsample_analysis/ss_analysis.tcl" \
+      "lipidorder_analysis/lo_analysis.tcl"  \
+      "area_analysis/ap_analysis.tcl"        \
+      "zdev_analysis/zd_analysis.tcl"        \
+      "zprof_analysis/zp_analysis.tcl"       \
+      "orient_analysis/or_analysis.tcl"      \
+      "elecond_analysis/el_analysis.tcl"     \
+      "spec_output/spec_analysis.tcl")
+
+hlp=("trjconv     : Convert trajectory"                  \
+     "distance    : Distance Analysis"                   \
+     "comcrd      : Center-of-Mass Analysis"             \
+     "rotation    : Rotational Correlation Analysis"     \
+     "rdf         : RDF Analysis"                        \
+     "sdf         : SDF Analysis"                        \
+     "rmsd        : Root-Mean-Square-Deviation Analysis" \
+     "energy      : Energy Analysis"                     \
+     "strucsample : Structural Sampling Analysis"        \
+     "lipidorder  : Lipid Scd order-parameter Analysis"  \
+     "area        : Area Per Lipid Analysis"             \
+     "z_deviation : Z-deviation Analysis"                \
+     "z_profile   : Z-profile Analysis"                  \
+     "z_orient    : Orientation Analysis along z"        \
+     "elecond     : Electric conductivity Analysis"      \
+     "specfile    : Generate Species information files")
+
+nanas=${#anas[@]}
+
+if [ "$script" == "-h" ];then
+  echo "Available analysis in ANATRA"
+  for ((i=0;i<$nanas;i++));do
+    echo "${hlp[$i]}"
+  done
+  exit 
+fi
+
+ichk=-1
+for ((i=0;i<$nanas;i++));do
+  if [ $script == ${anas[$i]} ];then
+    ichk=$i
+  fi
+done
+
+if [ $ichk -eq -1 ]; then
+  for ((i=0;i<$nanas;i++));do
+    if [ $script == ${anas_abbrev[$i]} ];then
+      ichk=$i
+    fi
+  done
+fi
+
+if [ $ichk -le -1 ]; then
+  echo "Error: $script is not available."
+  exit
+else
+  ana=$ANATRA_PATH/tcl/${exes[$ichk]}
+fi
+
+vmd -dispdev text -e $ana -args $args

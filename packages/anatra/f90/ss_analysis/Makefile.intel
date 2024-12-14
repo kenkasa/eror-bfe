@@ -1,0 +1,31 @@
+FC=ifort
+HOME=.
+LIB=../lib
+XDRLIB=../lib/external/xdr-interface-fortran/xdrfile-1.1.4/lib
+XDRINTERFACE=../lib/external/xdr-interface-fortran
+EXEF=ss_analysis.x
+TRGT=ss_analysis
+
+OBJ=${XDRINTERFACE}/xdr.F90 \
+    ${LIB}/util.f90         \
+    ${LIB}/const.f90        \
+    ${LIB}/mtwist.f90       \
+    ${LIB}/random.f90       \
+    ${LIB}/input.f90        \
+    ${LIB}/output.f90       \
+    ${LIB}/dcd.f90          \
+    ${LIB}/xtclib.f90       \
+    ${LIB}/traj.f90         \
+    ${HOME}/ss_ctrl.f90     \
+    ${HOME}/ss_setup.f90    \
+    ${HOME}/ss_analyze.f90  \
+    ${HOME}/ss_main.f90
+
+all   : ${TRGT}
+clean :
+	rm ${SRC}*.o *.mod
+
+${TRGT} : ${OBJ} 
+	${FC} -qopenmp -o ${EXEF} ${OBJ} -L ${XDRLIB} -lxdrfile
+	cp ${EXEF} ../bin/
+	rm -f *.mod

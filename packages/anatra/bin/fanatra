@@ -1,0 +1,72 @@
+#!/bin/bash
+
+opts=("$@")
+nopts=$#
+args=""
+for ((i=1;i<$nopts;i++));do
+  args="$args ${opts[$i]}"
+done
+script=${opts[0]}
+
+##########
+
+anas=("hs" "pm" "rp" "sr" "rr" "ed" "ss" "state_define" "rd_gather" "sd_gather" \
+      "movave" "gderp" "rprate" "funcave" "slicedx")
+
+exes=("hs_analysis.x"     \
+      "pm_analysis.x"     \
+      "rp_analysis.x"     \
+      "sr_analysis.x"     \
+      "rr_analysis.x"     \
+      "ed_analysis.x"     \
+      "ss_analysis.x"     \
+      "st_analysis.x"     \
+      "rd_gather.x"       \
+      "sd_gather.x"       \
+      "movave_analysis.x" \
+      "gderp_analysis.x"  \
+      "rprate_analysis.x" \
+      "funcave_analysis.x" \
+      "slicedx_analysis.x") 
+
+hlp=("hs           : Histogram Analysis"                               \
+     "pm           : Potential of Mean Force (PMF) Analysis"           \
+     "rp           : Returning probability (RP) Analysis"              \
+     "sr           : State relaxation Analysis"                        \
+     "rr           : Restricted Radial function Analysis"              \
+     "ed           : Extract DCD Analysis"                             \
+     "ss           : Structural Sampling Analysis"                     \
+     "state_define : Define states from time-series data"              \
+     "rd_gather    : Gathering RDF data obtained from different traj." \
+     "sd_gather    : Gathering SDF data obtained from different traj." \
+     "movave       : Moving average Analysis"                          \
+     "gderp        : Generalize Diffusion Equation Analysis for RP"    \
+     "rprate       : Rate constant analysis based on RP theory"        \
+     "funcave      : Function average analysis"                        \
+     "slicedx      : Slice dx at specified z value")
+
+nanas=${#anas[@]}
+
+if [ "$script" == "-h" ];then
+  echo "Available analysis in Fortran ANATRA"
+  for ((i=0;i<$nanas;i++));do
+    echo "${hlp[$i]}"
+  done
+  exit 
+fi
+
+ichk=-1
+for ((i=0;i<$nanas;i++));do
+  if [ $script == ${anas[$i]} ];then
+    ichk=$i
+  fi
+done
+
+if [ $ichk -le -1 ]; then
+  echo "Error: $script is not available."
+  exit
+else
+  ana=$ANATRA_PATH/f90/bin/${exes[$ichk]}
+fi
+
+$ana $args

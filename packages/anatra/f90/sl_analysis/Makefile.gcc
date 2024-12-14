@@ -1,0 +1,22 @@
+FC=gfortran
+HOME=.
+LIB=../lib
+EXEF=sl_analysis.x
+TRGT=sl_analysis
+
+OBJ=${LIB}/util.f90        \
+    ${LIB}/const.f90       \
+    ${LIB}/input.f90       \
+    ${LIB}/output.f90      \
+    ${HOME}/sl_ctrl.f90    \
+    ${HOME}/sl_setup.f90   \
+    ${HOME}/sl_analyze.f90 \
+    ${HOME}/sl_main.f90
+
+all   : ${TRGT}
+clean :
+	rm ${SRC}*.o *.mod
+
+${TRGT} : ${OBJ} 
+	${FC} -fopenmp -o ${EXEF} ${OBJ}
+	cp ${EXEF} ../bin/

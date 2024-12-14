@@ -1,0 +1,83 @@
+#!/bin/bash
+
+opts=("$@")
+nopts=$#
+args=""
+for ((i=1;i<$nopts;i++));do
+  args="$args ${opts[$i]}"
+done
+script=${opts[0]}
+fctrl=${opts[1]}
+
+##########
+
+anas=("comcrd"      \
+      "lipidorder"  \
+      "z_profile"   \
+      "area"        \
+      "rdf"         \
+      "z_orient"    \
+      "sdf"         \
+      "distance"    \
+      "energy"      \
+      "strucsample" \
+      "sasa"        \
+      "rot")
+
+exes=("comcrd_analysis.x"     \
+      "lipidorder_analysis.x" \
+      "zp_analysis.x"     \
+      "NA"                \
+      "rd_analysis.x"     \
+      "or_analysis.x"     \
+      "sd_analysis.x"     \
+      "pd_analysis.x"     \
+      "energy_analysis.x" \
+      "ss_analysis.x"     \
+      "NA"                \
+      "NA") 
+
+hlp=("comcrd      : Center-of-Mass Analysis"             \
+     "lipidorder  : Scd order-parameter Analysis"        \
+     "z_profile   : Z-profile Analysis"                  \
+     "area        : Area Per Lipid Analysis"             \
+     "rdf         : RDF Analysis"                        \
+     "z_orient    : Orientation Analysis"                \
+     "sdf         : SDF Analysis"                        \
+     "distance    : PBC Distance Analysis"               \
+     "energy      : Energy Analysis"                     \
+     "strucsample : Structural Sampling Analysis"        \
+     "sasa        : SASA Analysis"                       \
+     "rotation    : rotation Analysis") 
+
+#nanas=${#anas[@]}
+nanas=${#exes[@]}
+
+if [ "$script" == "-h" ];then
+  echo "Available analysis in ANATRA w/o VMD"
+  for ((i=0;i<$nanas;i++));do
+    echo "${hlp[$i]}"
+  done
+  exit 
+fi
+
+ichk=-1
+for ((i=0;i<$nanas;i++));do
+  if [ $script == ${anas[$i]} ];then
+    ichk=$i
+  fi
+done
+
+if [ $ichk -le -1 ]; then
+  echo "Error: $script is not available in ANATRA w/o VMD."
+  exit
+else
+  ana=$ANATRA_PATH/f90/bin/${exes[$ichk]}
+fi
+
+if [ "${exes[$ichk]}" == "NA" ];then
+  echo "Error: Sorry, $script is not supported."
+  exit
+fi
+
+$ana $fctrl 

@@ -1,0 +1,29 @@
+FC=ifort
+HOME=.
+LIB=../lib
+EXEF=sr_analysis.x
+TRGT=sr_analysis
+
+OBJ=${LIB}/util.f90            \
+    ${LIB}/const.f90           \
+    ${LIB}/mtwist.f90          \
+    ${LIB}/random.f90          \
+    ${LIB}/input.f90           \
+    ${LIB}/output.f90          \
+    ${LIB}/cv.f90              \
+    ${LIB}/bootstrap.f90       \
+    ${HOME}/sr_ctrl.f90        \
+    ${HOME}/sr_analyze_str.f90 \
+    ${HOME}/sr_reac.f90        \
+		${HOME}/sr_tcf.f90         \
+    ${HOME}/sr_analyze.f90     \
+    ${HOME}/sr_main.f90
+
+all   : ${TRGT}
+clean :
+	rm ${SRC}*.o *.mod
+
+${TRGT} : ${OBJ} 
+	${FC} -qopenmp -o ${EXEF} ${OBJ}
+	cp ${EXEF} ../bin/
+	rm -f *.mod
