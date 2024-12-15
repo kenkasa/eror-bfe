@@ -11,7 +11,7 @@
     Distributed GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
   * ANATRA (ANAlyze TRAjectory)  
-    GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+    Distributed GNU GENERAL PUBLIC LICENSE Version 2, June 1991
     In this program, following external libraries are installed
 
 	* xdrfile-1.1.4  
