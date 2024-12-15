@@ -6,7 +6,7 @@
   
 ## Programs
 
-  * EROR: Modified ver. of ERmod 0.3.7
+  * EROR: Modified ver. of ERmod 0.3.7  
     Original version is available at https://sourceforge.net/p/ermod/wiki/Home/    
     GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
