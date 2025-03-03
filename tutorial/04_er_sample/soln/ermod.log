@@ -1,10 +1,70 @@
- ERmod 0.3.7, Copyright (C) 2000-2019 Nobuyuki Matubayasi
-                            2010-2019 Shun Sakuraba
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+libi40iw-i40iw_vmapped_qp: failed to pin memory for SQ
+libi40iw-i40iw_ucreate_qp: failed to map QP
+ ERmod 1.0.4, Copyright (C) 2000-2025 Nobuyuki Matubayasi
+                            2010-2025 Shun Sakuraba
+                            2015-2025 X-Ability Co., Ltd.
+                            2023-2025 Hidekazu Kojima
+                            2024-2025 Yutaka Maruyama
  ERmod comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you can redistribute it
  and/or modify it under certain conditions.
  See LICENSE file for details.
-Opening: "../../02_genesis_md/host-guest_in_water/run.dcd"...
+Opening: "/data6/kasa/wrk/bcd-bfe/package_dev/ermod-1.0.4_anatra/eror-bfe/tutorial/02_genesis_md/host-guest_in_water/run.dcd"...
   Trying plugin "CHARMM,NAMD,XPLOR DCD Trajectory"...dcdplugin) detected standard 32-bit DCD file of native endianness
 dcdplugin) CHARMM format DCD file (also NAMD 2.1 and later)
 OK
+ Starting erdst calculation with seed =      4125152708200871

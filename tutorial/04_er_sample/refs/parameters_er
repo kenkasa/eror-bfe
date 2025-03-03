@@ -16,6 +16,7 @@
         ms3max = 48,
         maxins = 1000,
         engdiv = 1,
+        iseed  = 3141592, 
         use_anatra  = .true.,   ! ADDED
         insposition = 7         ! ADDED
         stop_fail_ins = .false. ! ADDED

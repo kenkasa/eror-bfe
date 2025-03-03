@@ -7,7 +7,7 @@ dcd=../../02_genesis_md/host-guest_in_water/run.dcd
 # 1. Prepare template input files
 #    (parameters_er)
 
-python2 $exe                \
+python3 $exe                \
   -l $genesis_log           \
   -x $dcd                   \
   -d 1                      \

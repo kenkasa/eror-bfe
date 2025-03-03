@@ -6,7 +6,7 @@ prmtop=../01_amber_setup/host-guest_in_water/hg_in_water.prmtop
 # 1. Prepare soln and refs directories 
 #   soln : working directory for rho in the solution  system
 #   refs : working directory for rho and chi in the reference system
-python2 $exe  \
+python3 $exe  \
   -t $prmtop  \
   -s APR
 

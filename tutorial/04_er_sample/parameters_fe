@@ -1,9 +1,3 @@
 &fevars
 inptemp=298.000000
-slndnspf  = 'engint'
-aveuvfile = 'avint.tt'
-solndirec = 'soln/Long_Sample'
-refsdirec = 'refs/Long_Sample'
-numdiv    = 5
 /
-

@@ -8,7 +8,7 @@ dcd_gas=../../02_genesis_md/guest_in_gas/run.dcd
 # 1. Prepare template input files
 #    (parameters_er)
 
-python2 $exe                \
+python3 $exe                \
   -l $genesis_log           \
   -x $dcd                   \
   -s $dcd_gas               \
@@ -66,6 +66,7 @@ cat << EOF > parameters_er
         ms3max = 48,
         maxins = 1000,
         engdiv = 1,
+        iseed  = 3141592, 
         use_anatra  = .true.,   ! ADDED
         insposition = 7         ! ADDED
         stop_fail_ins = .false. ! ADDED

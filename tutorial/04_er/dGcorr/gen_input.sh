@@ -8,7 +8,7 @@ dcd_gas=../../02_genesis_md/guest_in_gas/run.dcd
 # 1. Prepare template input files
 #    (parameters_er)
 
-python2 $exe                \
+python3 $exe                \
   -l $genesis_log           \
   -x $dcd                   \
   -s $dcd_gas               \
@@ -68,7 +68,7 @@ cat << EOF > parameters_er
         engdiv = 1,
         use_anatra  = .true.,   ! ADDED
         calc_energy = .false.   ! ADDED
-        
+        iseed = 3141592 
 /
 
 &output_param
