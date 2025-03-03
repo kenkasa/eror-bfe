@@ -549,9 +549,9 @@ ls
 > Prob_Result   # <--- Output: Prob. of finding OR state in B state
 > SltInfo
 > aveuv.tt
-> avint.tt      # <--- Output: Average interaction energy of solute with surrounding
-> engint.01     # <--- Output: rho  
-> engint.tt
+> avovl.tt      # <--- Output: Average interaction energy of solute with surrounding
+> engovl.01     # <--- Output: rho  
+> engovl.tt
 > engsln.01
 > engsln.tt
 > ermod.log
@@ -563,7 +563,7 @@ ls
 > uvrange.tt
 > weight_soln  # <--- Output:  # weight file for the target trajectory
 ``` 
-``engint.*`` and ``weight_soln`` are used for the solvation free-energy calculation. The free energy change associated with the transition from the OR to solution is described in ``Prob_Result``
+``engovl.*`` and ``weight_soln`` are used for the solvation free-energy calculation. The free energy change associated with the transition from the OR to solution is described in ``Prob_Result``
 ```
 cat Prob_Result
 > Probability to find the system in the OR state =     0.040000
@@ -582,15 +582,15 @@ However, the trajectory used in this tutorial is too short, the calculation can 
 Then, let's use the data obtained using the long timescale trajectories. The location of the data is  
 ```
 ls soln/Long_Sample
-> avint.tt  dGrel.09  dGrel.18   engint.02  engint.11  engint.20
-> dGrel.01  dGrel.10  dGrel.19   engint.03  engint.12  engint.21
-> dGrel.02  dGrel.11  dGrel.20   engint.04  engint.13  engint.22
-> dGrel.03  dGrel.12  dGrel.21   engint.05  engint.14  engint.23
-> dGrel.04  dGrel.13  dGrel.22   engint.06  engint.15  engint.24
-> dGrel.05  dGrel.14  dGrel.23   engint.07  engint.16  engint.25
-> dGrel.06  dGrel.15  dGrel.24   engint.08  engint.17  weight_soln
-> dGrel.07  dGrel.16  dGrel.25   engint.09  engint.18
-> dGrel.08  dGrel.17  engint.01  engint.10  engint.19
+> avovl.tt  dGrel.09  dGrel.18   engovl.02  engovl.11  engovl.20
+> dGrel.01  dGrel.10  dGrel.19   engovl.03  engovl.12  engovl.21
+> dGrel.02  dGrel.11  dGrel.20   engovl.04  engovl.13  engovl.22
+> dGrel.03  dGrel.12  dGrel.21   engovl.05  engovl.14  engovl.23
+> dGrel.04  dGrel.13  dGrel.22   engovl.06  engovl.15  engovl.24
+> dGrel.05  dGrel.14  dGrel.23   engovl.07  engovl.16  engovl.25
+> dGrel.06  dGrel.15  dGrel.24   engovl.08  engovl.17  weight_soln
+> dGrel.07  dGrel.16  dGrel.25   engovl.09  engovl.18
+> dGrel.08  dGrel.17  engovl.01  engovl.10  engovl.19
 
 ls refs/Long_Sample
 > corref.01.zip  engref.01  weight_refs
@@ -611,8 +611,8 @@ ls ./run.sh
 > cat << EOF > parameters_fe
 > &fevars
 > inptemp=298.000000
-> slndnspf  = 'engint'
-> aveuvfile = 'avint.tt'
+> slndnspf  = 'engovl'
+> aveuvfile = 'avovl.tt'
 > solndirec = 'soln/Long_Sample'
 > refsdirec = 'refs/Long_Sample'
 > numdiv    = 5
