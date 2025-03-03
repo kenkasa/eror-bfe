@@ -294,6 +294,8 @@ contains
       call dummy_init              ! dummy initialization for refs parameters
       call init_params(refsdirec)
 
+      if (use_eror) insposition_s = insposition ! ANATRA
+
       inconsistent = .false.
 
       if((boxshp /= boxshp_s) .or. (estype /= estype_s)) then
