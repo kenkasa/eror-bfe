@@ -1,12 +1,15 @@
 # Energy-representation theory incorporating a solution state with overlapped distributions with reference (ER-OR) 
 
+## HISTORY
+Mar-03 2025. ERmod program in which ER-OR function is implemented has been updated to 1.0.4!
+
 ## Introduction
 
   ER-OR method enables us to compute binding free energy using the information on the endpoint states (solution and reference) 
   
 ## Programs
 
-  * EROR: Modified ver. of ERmod 0.3.7  
+  * EROR: Modified ver. of ERmod 1.0.4 
     Original version is available at https://sourceforge.net/p/ermod/wiki/Home/    
     Distributed GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
