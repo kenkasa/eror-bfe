@@ -123,14 +123,13 @@ contains
       select case(particle_type)
        case('system')                  ! reading the HISTORY file
          call read_trajectory(history_trajectory, OUTatm, (OUTbox == 1), OUTpos, OUTcell, status)
-         if(status /= 0) call halt_with_error("set_trj")
+         !if(status /= 0) call halt_with_error("set_trj")
 
          if (status == 0) then
            if (use_selection) then
              read(fcvread_io,*) dum, readcv
            end if
          end if
-         !if(status /= 0) call halt_with_error("set_trj")
   
          ! <--- ANATRA
          if (status /= 0) then

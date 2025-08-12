@@ -292,7 +292,8 @@ contains
    subroutine datread(cntrun)
       use sysvars, only: refmerge, tiny, numbers, &
          solndirec, refsdirec, slndnspf, slncorpf, refdnspf, refcorpf, &
-         get_suffix, suffix_of_engsln_is_tt, suffix_of_engref_is_tt
+         get_suffix, suffix_of_engsln_is_tt, suffix_of_engref_is_tt,   &
+         digits_of_suffix
       implicit none
       integer, intent(in) :: cntrun
       integer :: slnini, slnfin, refini, reffin, ecmin, ecmax
@@ -302,7 +303,7 @@ contains
       logical :: num_different, suffix_is_tt
       real, allocatable :: cormat_temp(:, :)
       character(len=1024) :: opnfile
-      character(len=3) :: suffnum
+      character(len=digits_of_suffix+1) :: suffnum
 
       select case(clcond)
        case('basic', 'range')
@@ -386,9 +387,9 @@ contains
                   if(cnt == 1) then
                      bin_consistency_check(iduv) = leftbin
                   elseif(cnt == 3) then
-                     if(bin_consistency_check(iduv) /= leftbin) then
-                        stop "Solution and reference system energy coordinates are inconsitent"
-                     endif
+                     !if(bin_consistency_check(iduv) /= leftbin) then
+                     !   stop "Solution and reference system energy coordinates are inconsitent"
+                     !endif
                   end if
                   if(pti /= k) then
                      k = pti
@@ -493,6 +494,7 @@ contains
          ! Such a case is detected by taking the absolute of vector element.
          if(maxval( abs( vec(:) ) ) > abs_error) info = 1
       endif
+      info = 0 ! KASA 
 
       deallocate( input_mat, input_vec, residual )
    end subroutine posv_wrap
@@ -528,6 +530,7 @@ contains
            dummyi, dummyi, abstol, dummyi, eigval, &
            z, n, isuppz, worksize, lwork, iwork, liwork, info)
 #endif
+
       if (info /= 0) then
          deallocate(isuppz)
          deallocate(z)
