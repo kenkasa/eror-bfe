@@ -141,6 +141,7 @@ module mod_prmtop
       ! read ATOM_TYPE_INDEX 
       !
       allocate(prmtop%iac(prmtop%natom))
+      !write(iw,'("ATOM_TYPE_INDEX")')
       call seek_prmtop_flag(iunit, 'ATOM_TYPE_INDEX', ierr)
       call read_prmtop_integer(iunit, prmtop%natom, prmtop%iac)
 
@@ -148,6 +149,7 @@ module mod_prmtop
       !
       nsize = prmtop%ntypes * prmtop%ntypes
       allocate(prmtop%ico(nsize))
+      !write(iw,'("NONBONDED_PARM_INDEX")')
       call seek_prmtop_flag(iunit, 'NONBONDED_PARM_INDEX', ierr)
       call read_prmtop_integer(iunit, nsize, prmtop%ico)
 
@@ -155,6 +157,7 @@ module mod_prmtop
       !
       nsize = prmtop%ntypes * (prmtop%ntypes + 1) / 2
       allocate(prmtop%cn1(nsize))
+      !write(iw,'("LENNARD_JONES_ACOEF")')
       call seek_prmtop_flag(iunit, 'LENNARD_JONES_ACOEF', ierr)
       call read_prmtop_real(iunit, nsize, prmtop%cn1)
 
@@ -162,6 +165,7 @@ module mod_prmtop
       !
       nsize = prmtop%ntypes * (prmtop%ntypes + 1) / 2
       allocate(prmtop%cn2(nsize))
+      !write(iw,'("LENNARD_JONES_BCOEF")')
       call seek_prmtop_flag(iunit, 'LENNARD_JONES_BCOEF', ierr)
       call read_prmtop_real(iunit, nsize, prmtop%cn2)
 
@@ -169,6 +173,7 @@ module mod_prmtop
       !
       nsize = prmtop%natom
       allocate(prmtop%charge(nsize))
+      !write(iw,'("CHARGE")')
       call seek_prmtop_flag(iunit, 'CHARGE', ierr)
       call read_prmtop_real(iunit, nsize, prmtop%charge)
 
@@ -176,6 +181,7 @@ module mod_prmtop
       !
       nsize = prmtop%natom
       allocate(prmtop%num_excl_atm(nsize))
+      !write(iw,'("NUMBER_EXCLUDED_ATOMS")')
       call seek_prmtop_flag(iunit, 'NUMBER_EXCLUDED_ATOMS', ierr)
       call read_prmtop_integer(iunit, nsize, prmtop%num_excl_atm)
 
@@ -183,6 +189,7 @@ module mod_prmtop
       !
       nsize = prmtop%nnb
       allocate(prmtop%excl_atm_list(nsize))
+      !write(iw,'("EXCLUDED_ATOMS_LIST")')
       call seek_prmtop_flag(iunit, 'EXCLUDED_ATOMS_LIST', ierr)
       call read_prmtop_integer(iunit, nsize, prmtop%excl_atm_list)
 
@@ -190,6 +197,7 @@ module mod_prmtop
       !
       nsize = prmtop%nptra
       allocate(prmtop%scee_scale_fact(nsize))
+      !write(iw,'("SCEE_SCALE_FACTOR")')
       call seek_prmtop_flag(iunit, 'SCEE_SCALE_FACTOR', ierr)
       call read_prmtop_real(iunit, nsize, prmtop%scee_scale_fact)
 
@@ -197,6 +205,7 @@ module mod_prmtop
       !
       nsize = prmtop%nptra
       allocate(prmtop%scnb_scale_fact(nsize))
+      !write(iw,'("SCNB_SCALE_FACTOR")')
       call seek_prmtop_flag(iunit, 'SCNB_SCALE_FACTOR', ierr)
       call read_prmtop_real(iunit, nsize, prmtop%scnb_scale_fact)
 
@@ -204,6 +213,7 @@ module mod_prmtop
       !
       nsize = prmtop%nphih * 5
       allocate(prmtop%dihed_inc_hyd(nsize))
+      !write(iw,'("DIHEDRALS_INC_HYDROGEN")')
       call seek_prmtop_flag(iunit, 'DIHEDRALS_INC_HYDROGEN', ierr)
       call read_prmtop_integer(iunit, nsize, prmtop%dihed_inc_hyd)
 
@@ -211,6 +221,7 @@ module mod_prmtop
       !
       nsize = prmtop%nphia * 5
       allocate(prmtop%dihed_wo_hyd(nsize))
+      !write(iw,'("DIHEDRALS_WITHOUT_HYDROGEN")')
       call seek_prmtop_flag(iunit, 'DIHEDRALS_WITHOUT_HYDROGEN', ierr)
       call read_prmtop_integer(iunit, nsize, prmtop%dihed_wo_hyd)
 
@@ -264,7 +275,7 @@ module mod_prmtop
       character(*),           intent(in)  :: flag
       integer,                intent(out) :: ierr
 
-      character(len=MaxChar) :: line, c1, c2 
+      character(len=MaxChar) :: line, c1, c2, percheck 
       logical                :: is_found
 
 
@@ -281,7 +292,14 @@ module mod_prmtop
           if (trim(c2) == trim(flag)) then
             is_found = .true.
             ! Skip FORMAT line
-            read(iunit,*) 
+            do while (.true.)
+              read(iunit,'(a)') percheck
+              if (percheck(1:1) /= '%') then
+                backspace(iunit)
+                exit
+              end if 
+            end do
+
           end if
         end if
 
@@ -306,11 +324,35 @@ module mod_prmtop
       integer, intent(in)  :: nsize
       integer, intent(out) :: arr(nsize) 
 
-      integer :: i, j, k
-      integer :: i10, ires, nl
+      integer, parameter   :: ncolmax = 20 
+
+      integer                :: i, j, k
+      integer                :: i10, ires, nl
+      integer                :: ierr, icol, ncol
+      integer                :: col(ncolmax+1)
+      character(len=MaxChar) :: line
 
 
-      nl   = 10
+      ! Check # of columns
+      !
+      read(iunit,'(a)') line
+      backspace(iunit)
+
+      ncol = ncolmax + 1
+100   ncol = ncol - 1
+      if (ncol == 0) then
+        write(iw,'("Read_Prmtop_Real> Error.")')
+        write(iw,'("No data on FLAG.")')
+        stop
+      end if
+
+      read(line,*,iostat=ierr) (col(icol), icol = 1, ncol)
+      if (ierr /= 0) then
+        go to 100
+      end if
+
+      nl  = ncol
+      !nl   = 10
 
       i10  = nsize / nl 
       ires = nsize - i10 * nl 
@@ -337,11 +379,35 @@ module mod_prmtop
       integer, intent(in)  :: nsize
       real(8), intent(out) :: arr(nsize) 
 
-      integer :: i, j, k
-      integer :: il, ires, nl
+      integer, parameter   :: ncolmax = 5 
+
+      integer                :: i, j, k
+      integer                :: il, ires, nl
+      integer                :: ierr, icol, ncol
+      integer                :: col(ncolmax+1) 
+      character(len=MaxChar) :: line
 
 
-      nl = 5
+      ! check # of columns
+      !
+      read(iunit,'(a)') line
+      backspace(iunit)
+
+      ncol = ncolmax + 1
+100   ncol = ncol - 1
+      if (ncol == 0) then
+        write(iw,'("Read_Prmtop_Real> Error.")')
+        write(iw,'("No data on FLAG.")')
+        stop
+      end if
+
+      read(line,*,iostat=ierr) (col(icol), icol = 1, ncol)
+      if (ierr /= 0) then
+        go to 100
+      end if
+
+      nl  = ncol
+      !nl = 5
 
       il   = nsize / nl 
       ires = nsize - il * nl 

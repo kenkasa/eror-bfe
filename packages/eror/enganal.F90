@@ -108,7 +108,8 @@ program trjmain
       call engclear
 
       do iframe = 1, frames_per_div, nprocs
-         call getconf_parallel(frames_per_div - iframe + 1, nread)
+         !call getconf_parallel(frames_per_div - iframe + 1, nread)
+         call getconf_parallel(frames_per_div - iframe + 1, nread, itrj)
          call enganal(stnum + myrank + 1, nread)
          stnum = stnum + nread
       end do
