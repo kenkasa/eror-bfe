@@ -669,7 +669,7 @@ contains
        call setup_fit(traj(option%uid_fit), anatra_fitu)
        call setup_fit(traj(option%vid_fit), anatra_fitv)
      end if
- 
+
      ! Setup state_count
      !
      allocate(state_count(0:option%nstate))

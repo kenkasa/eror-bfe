@@ -85,6 +85,7 @@ module mod_anatra_ermod
     integer        :: parmformat       = ParmFormatPRMTOP
     logical        :: pbc              = .false.
     logical        :: use_sdf          = .false.
+    logical        :: use_zrel         = .false.
     logical        :: project_rpl      = .false.
     real(8)        :: rljcut           = 12.0d0
     real(8)        :: relcut           = 1.0d10
@@ -92,9 +93,12 @@ module mod_anatra_ermod
     real(8)        :: box(3)           = 0.0d0
     real(8)        :: box_shrink(3)    = 0.0d0
     real(8)        :: sdf_threshold    = -1.0d10
+    real(8)        :: zmin             = 0.0d0
+    real(8)        :: zmax             = 0.0d0
     integer        :: reac_coords(NdimMax)   = 0
     integer        :: uid_fit          = 0
     integer        :: vid_fit          = 0
+    integer        :: vid_zrel         = 0
     integer        :: uid_ins          = 0
     type(s_eneopt) :: eneopt(NdimMax)
     type(s_disopt) :: disopt(NdimMax)
@@ -179,15 +183,19 @@ module mod_anatra_ermod
       character(len=MaxChar) :: reac_coords(NdimMax)   = (/"ENERGY", "ENERGY", "ENERGY", "ENERGY", "ENERGY"/)
       logical                :: pbc              = .false.
       logical                :: use_sdf          = .false.
+      logical                :: use_zrel         = .false.
       logical                :: project_rpl      = .false.
       real(8)                :: rljcut           = 12.0d0
       real(8)                :: relcut           = 1.0d10
       integer                :: grid_resolution  = 1
       real(8)                :: box(3)           = 0.0d0
       real(8)                :: box_shrink(3)    = 0.0d0
-      real(8)                :: sdf_threshold    = -1.0d10
-      integer                :: uid_fit          = 0
-      integer                :: vid_fit          = 0
+      real(8)                :: sdf_threshold    = -1.0d10  ! for sdf
+      real(8)                :: zmin             = 0.0d0    ! for zrel
+      real(8)                :: zmax             = 0.0d0    ! for zrel 
+      integer                :: uid_fit          = 0        ! for sdf
+      integer                :: vid_fit          = 0        ! for sdf
+      integer                :: vid_zrel         = 0        ! for zrel 
       integer                :: uid_ins          = 0
 
       integer                :: i
@@ -199,6 +207,7 @@ module mod_anatra_ermod
                               reac_coords,      &
                               pbc,              &
                               use_sdf,          &
+                              use_zrel,         &
                               project_rpl,      &
                               rljcut,           &
                               relcut,           &
@@ -206,8 +215,11 @@ module mod_anatra_ermod
                               box,              &
                               box_shrink,       &
                               sdf_threshold,    &
+                              zmin,             &
+                              zmax,             &
                               uid_fit,          &
                               vid_fit,          &
+                              vid_zrel,         &
                               uid_ins
 
 
@@ -224,10 +236,15 @@ module mod_anatra_ermod
       grid_resolution = 1           ! Fixed
       uid_fit         = 0
       vid_fit         = 0
+      vid_zrel        = 0
       uid_ins         = 0
       box             = 0.0d0
       box_shrink      = 0.0d0
+      zmin            = 0.0d0
+      zmax            = 0.0d0
       sdf_threshold   = -1.0d10
+      use_sdf         = .false.
+      use_zrel        = .false.
 
       rewind iunit
       read(iunit, option_param)
@@ -244,6 +261,7 @@ module mod_anatra_ermod
         write(iw,'("reac_coords      = ", 2(a,2x))') (trim(reac_coords(i)), i = 1, 2)
         write(iw,'("pbc              = ", a)')       get_tof(pbc)
         write(iw,'("use_sdf          = ", a)')       get_tof(use_sdf)
+        write(iw,'("use_zrel         = ", a)')       get_tof(use_zrel)
         write(iw,'("project_rpl      = ", a)')       get_tof(project_rpl)
         write(iw,'("rljcut           = ",f20.10)')   rljcut
         write(iw,'("relcut           = ",e20.10)')   relcut
@@ -251,8 +269,11 @@ module mod_anatra_ermod
         write(iw,'("box              = ", 3f20.10)') box(1:3)
         write(iw,'("box_shrink       = ", 3f20.10)') box_shrink(1:3)
         write(iw,'("sdf_threshold    = ",  f20.10)') sdf_threshold 
+        write(iw,'("zmin             = ",  f20.10)') zmin 
+        write(iw,'("zmax             = ",  f20.10)') zmax
         write(iw,'("uid_fit          = ", i0)')      uid_fit
         write(iw,'("vid_fit          = ", i0)')      vid_fit
+        write(iw,'("vid_zrel         = ", i0)')      vid_zrel
         write(iw,'("uid_ins          = ", i0)')      uid_ins
       end if
 
@@ -280,6 +301,7 @@ module mod_anatra_ermod
       option%nstate           = nstate
       option%pbc              = pbc
       option%use_sdf          = use_sdf
+      option%use_zrel         = use_zrel
       option%project_rpl      = project_rpl 
       option%rljcut           = rljcut
       option%relcut           = relcut
@@ -287,8 +309,11 @@ module mod_anatra_ermod
       option%box              = box
       option%box_shrink       = box_shrink
       option%sdf_threshold    = sdf_threshold
+      option%zmin             = zmin
+      option%zmax             = zmax
       option%uid_fit          = uid_fit
       option%vid_fit          = vid_fit
+      option%vid_zrel         = vid_zrel
       option%uid_ins          = uid_ins
 
       ! Read reacttion coordinate settings

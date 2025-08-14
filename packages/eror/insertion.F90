@@ -129,10 +129,10 @@ contains
 
    subroutine set_solute_origin(insml)
       use engmain, only: insorigin, numsite, mol_begin_index, mol_end_index, &
-                         bfcoord, sitepos,                                   &
+                         bfcoord, sitepos, cell,                             &
                          INSORG_ORIGIN, INSORG_NOCHANGE, INSORG_AGGCEN,      &
                          INSORG_REFSTR,                                      &
-                         INSORG_ANATRA, INSORG_ANATRA_RANDOM,                             &
+                         INSORG_ANATRA, INSORG_ANATRA_RANDOM,                &
                          traj, option, com, spregion, vfit_xyz, anatra_fitv, anatra_fitu
       
       use mod_fitting,      only : s_fit, get_trrot, operate_trrot
@@ -150,7 +150,7 @@ contains
       real(8) :: r(1:4), refcompos(3, 1), compos(3), total_mass
       real(8) :: dcom(3)
       real(8) :: x, y, z, dx, dy, dz
-      real(8) :: tpos(3, 1)
+      real(8) :: tpos(3, 1), zwidth
 
       nsite = numsite(insml)
       molb = mol_begin_index(insml)
@@ -169,80 +169,129 @@ contains
        case(INSORG_REFSTR)
          call reffit
        case(INSORG_ANATRA)
+ 
+         if (option%use_sdf) then 
+
+           ! Load host structure in solvents
+           !
+           uid = option%uid_fit
+           vid = option%vid_fit
+           do iatm = 1, anatra_fitv%natm
+             anatra_fitv%movcoord(1:3, iatm) = vfit_xyz%coord(1:3, iatm) 
+             !anatra_fitv%refcoord(1:3, iatm) = sitepos(1:3, fitv%ind(iatm))
+             anatra_fitv%refcoord(1:3, iatm) = sitepos(1:3, traj(vid)%ind(iatm))
+           end do
   
-         ! Load host structure in solvents
-         !
-         uid = option%uid_fit
-         vid = option%vid_fit
-         do iatm = 1, anatra_fitv%natm
-           anatra_fitv%movcoord(1:3, iatm) = vfit_xyz%coord(1:3, iatm) 
-           !anatra_fitv%refcoord(1:3, iatm) = sitepos(1:3, fitv%ind(iatm))
-           anatra_fitv%refcoord(1:3, iatm) = sitepos(1:3, traj(vid)%ind(iatm))
-         end do
+           ! get rms fit matrix and translation vector
+           !
+           call get_trrot(anatra_fitv)
   
-         ! get rms fit matrix and translation vector
-         !
-         call get_trrot(anatra_fitv)
+           !do i = 1, 3
+           !  write(6,'(3f20.10)') anatra_fitv%rot_matrix(1:3, i)
+           !end do
+           !write(6,'(" refcom ",3f20.10)') anatra_fitv%refcom(1:3)
+           !write(6,'(" movcom ",3f20.10)') anatra_fitv%movcom(1:3)
   
-         !do i = 1, 3
-         !  write(6,'(3f20.10)') anatra_fitv%rot_matrix(1:3, i)
-         !end do
-         !write(6,'(" refcom ",3f20.10)') anatra_fitv%refcom(1:3)
-         !write(6,'(" movcom ",3f20.10)') anatra_fitv%movcom(1:3)
+           ! get random number
+           !
+           do i = 1, 4
+             call urand(r(i))
+           end do
   
-         ! get random number
-         !
-         do i = 1, 4
-           call urand(r(i))
-         end do
+           ! get insertion position in the molecular frame 
+           !
+           !ispr = nint(r(1) * (spregion%nspr - 1) + 1)
+           ispr = int(r(1) * spregion%nspr) + 1
+           !write(6,'("ispr =", i0," / ",i0)') ispr, spregion%nspr
+           if (ispr > spregion%nspr) &
+             ispr = spregion%nspr
+           if (ispr == 0) &
+             ispr = 1
   
-         ! get insertion position in the molecular frame 
-         !
-         !ispr = nint(r(1) * (spregion%nspr - 1) + 1)
-         ispr = int(r(1) * spregion%nspr) + 1
-         !write(6,'("ispr =", i0," / ",i0)') ispr, spregion%nspr
-         if (ispr > spregion%nspr) &
-           ispr = spregion%nspr
-         if (ispr == 0) &
-           ispr = 1
+           x    = spregion%data(1, ispr)
+           y    = spregion%data(2, ispr)
+           z    = spregion%data(3, ispr)
   
-         x    = spregion%data(1, ispr)
-         y    = spregion%data(2, ispr)
-         z    = spregion%data(3, ispr)
+           dx   = spregion%del(1) * (r(2) - 0.5d0) * option%grid_resolution
+           dy   = spregion%del(2) * (r(3) - 0.5d0) * option%grid_resolution
+           dz   = spregion%del(3) * (r(4) - 0.5d0) * option%grid_resolution
   
-         dx   = spregion%del(1) * (r(2) - 0.5d0) * option%grid_resolution
-         dy   = spregion%del(2) * (r(3) - 0.5d0) * option%grid_resolution
-         dz   = spregion%del(3) * (r(4) - 0.5d0) * option%grid_resolution
+           refcompos(1, 1) = x + dx
+           refcompos(2, 1) = y + dy
+           refcompos(3, 1) = z + dz
   
-         refcompos(1, 1) = x + dx
-         refcompos(2, 1) = y + dy
-         refcompos(3, 1) = z + dz
+           ! Get insertion position in the laboratory frame
+           !
+           call set_solute_com(insml, refcompos)
+           call operate_trrot(anatra_fitv, 1, refcompos)
+           call set_solute_com(insml, refcompos)
   
-         ! Get insertion position in the laboratory frame
-         !
-         call set_solute_com(insml, refcompos)
-         call operate_trrot(anatra_fitv, 1, refcompos)
-         call set_solute_com(insml, refcompos)
+           ! Shift  
+           !
+           if (option%uid_ins /= 0) then
+             uid = option%uid_ins
+             do iatm = 1, traj(uid)%natm
+               jatm = traj(uid)%ind(iatm)
+               traj(uid)%coord(1:3, iatm, 1) = sitepos(1:3, jatm)
+             end do
   
-         ! Shift  
-         !
-         if (option%uid_ins /= 0) then
+             call get_com_again(traj(uid), com(uid))
+  
+             !dcom(:) = refcompos(:, 1) - com(uid)%coord(:, 1, 1)
+             dcom(:)         = com(uid)%coord(:, 1, 1) - refcompos(:, 1)
+             refcompos(:, 1) = refcompos(:, 1) - dcom(:)   
+
+             call set_solute_com(insml, refcompos) 
+             !do iatm = 1, traj(uid)%natm
+             !  jatm = traj(uid)%ind(iatm)
+             !  sitepos(1:3, jatm) = sitepos(1:3, jatm) + dcom(1:3)
+             !end do
+              
+           end if
+
+         end if ! use_sdf
+
+         if (option%use_zrel) then
+
+           zwidth = abs(option%zmax - option%zmin)
+
            uid = option%uid_ins
-           do iatm = 1, traj(uid)%natm
-             jatm = traj(uid)%ind(iatm)
-             traj(uid)%coord(1:3, iatm, 1) = sitepos(1:3, jatm)
+           vid = option%vid_zrel
+
+           ! Get z-origin
+           !
+           do iatm = 1, traj(vid)%natm
+             jatm = traj(vid)%ind(iatm)
+             traj(vid)%coord(1:3, iatm, 1) = sitepos(1:3, jatm)
            end do
-  
+           call get_com_again(traj(vid), com(vid))
+
+           ! Set CoM position of solute 
+           !
+           do i = 1, 3
+             call urand(r(i))
+           end do
+           compos(:) = matmul(cell(:, :), r(1:3))
+           compos(3) = com(vid)%coord(3, 1, 1) + option%zmin + zwidth * r(3)
+           call set_solute_com(insml, compos)
+
+           ! Load Solute coordinate of selected part & Get its CoM
+           !
+           do iatm = 1, traj(uid)%natm
+             jatm = traj(uid)%ind(iatm) 
+             traj(uid)%coord(1:3, iatm, 1) = sitepos(1:3, jatm) 
+           end do
            call get_com_again(traj(uid), com(uid))
-  
-           dcom(:) = refcompos(:, 1) - com(uid)%coord(:, 1, 1)
-  
-           do iatm = 1, traj(uid)%natm
-             jatm = traj(uid)%ind(iatm)
-             sitepos(1:3, jatm) = sitepos(1:3, jatm) + dcom(1:3)
-           end do
-            
+
+           ! Shift Solute coordinate
+           !
+           dcom(3)   = com(uid)%coord(3, 1, 1) - compos(3)
+           compos(3) = compos(3) - dcom(3) 
+
+           call set_solute_com(insml, compos)
+
          end if
+
        case default
          stop "Unknown insorigin in set_solute_origin"
       end select
@@ -786,7 +835,7 @@ contains
       logical :: is_inside
   
   
-      if ((.not. calc_energy)) then
+      if (.not. calc_energy) then
         call check_solute_anatra_noER(insml)
       end if
 
@@ -797,8 +846,12 @@ contains
             call halt_with_error('ins_bug')
          endif
       else if (insorigin == INSORG_ANATRA .or. insorigin == INSORG_ANATRA_RANDOM) then
-  
-         call check_solute_anatra(out_of_range)
+ 
+         if (option%ndim > 0) then 
+           call check_solute_anatra(out_of_range)
+         else
+           out_of_range = .false.
+         end if
    
          !out_of_range = .false.
    
