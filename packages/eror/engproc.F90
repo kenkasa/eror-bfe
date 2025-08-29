@@ -668,9 +668,11 @@ contains
          SLT_SOLN, SLT_REFS_RIGID, SLT_REFS_FLEX, NO, YES
       use mpiproc                                                      ! MPI
       implicit none
-      integer :: stnum, pti, j, k, iduv, division, reduce_mpikind
-      character(len=9) :: engfile
-      character(len=3) :: suffeng
+      integer :: stnum, pti, j, k, l, iduv, division, reduce_mpikind
+      character(len=10) :: engfile
+      !character(len=9) :: engfile
+      !character(len=3) :: suffeng
+      character(len=4) :: suffeng
       integer, parameter :: eng_io = 51, cor_io = 52, slf_io = 53
       integer, parameter :: ave_io = 54, wgt_io = 55, uvr_io = 56
       real(kind=8) :: voffset_local, voffset_scale
@@ -759,11 +761,12 @@ contains
 #endif
          if(myrank == 0) then
             if(engdiv == 1) then
-               suffeng = '.tt'
+               suffeng = '.ttt'
             else
-               j = division / 10
-               k = mod(division, 10)
-               suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+               !j = division / 10
+               !k = mod(division, 10)
+               !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+               write(suffeng,'(".", i3.3)') division
             endif
  
             edovlp(:) = edovlp(:) / norm_ovlp
@@ -862,11 +865,15 @@ contains
       endif
 
       if(engdiv == 1) then
-         suffeng = '.tt'
+         suffeng = '.ttt'
       else
-         j = division / 10
-         k = mod(division, 10)
-         suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+         !j = division / 10
+         !k = mod(division, 10)
+         !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+         !j = division / 100
+         !k = mod(division, 100)
+         !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+         write(suffeng,'(".", i3.3)') division 
       endif
       !
       ! storing the solute-solvent pair-energy distribution function
