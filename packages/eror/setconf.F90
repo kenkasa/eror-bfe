@@ -680,6 +680,7 @@ contains
          bfcoord, sitemass, charge, &
          ljene_mat, ljlensq_mat, ljtype, ljtype_max, cmbrule, &
          specatm, sitepos, &
+         only_lj, &
          mol_begin_index, mol_end_index, belong_to, mol_charge, &
          solute_file, solvent_file, mol_io, ljtable_file, ljtable_io, &
          LJFMT_EPS_cal_SGM_nm, LJFMT_EPS_Rminh, LJFMT_EPS_J_SGM_A, &
@@ -924,6 +925,15 @@ contains
                ljtype_temp(sid) = ljtype_found
             end do
          endif
+
+         if (molfile == solute_file) then
+           if (only_lj) then
+             !do i = 1, stmax
+             !  write(6,'(" charge = ",f20.10)') charge_temp(i)
+             !end do
+             charge_temp(1:stmax) = 0.0d0
+           end if
+         end if
 
          do i = 1, ptcnt(pti)
             ljtype(cur_atom:(cur_atom + stmax - 1)) = ljtype_temp(1:stmax)
