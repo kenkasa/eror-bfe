@@ -75,6 +75,7 @@ contains
       real(kind=8) :: factor, incre, cdrgvl(0:rglmax+1), ecpmrd(large)
       integer :: solute_moltype
       integer :: iduv, i, q, pti, regn, minrg, maxrg, uprgcd(0:rglmax+1), dummy
+      integer :: i1, i2, i3
       integer            :: iunit
       character(len=512) :: fname
       integer, dimension(:), allocatable :: tplst
@@ -86,9 +87,11 @@ contains
       ! start of the extension for the method with the overlapped state
       logical :: edens_exist
       character(len=1024) :: opnfile
-      integer, parameter :: sufmax = 99, refs_io = 81
+      !integer, parameter :: sufmax = 99, refs_io = 81
+      integer, parameter :: sufmax = 999, refs_io = 81
       character(len=3), parameter :: suffix_tt = '.tt'
-      character(len=3) :: count_suf
+      !character(len=3) :: count_suf
+      character(len=4) :: count_suf
       namelist /eror/ refs_filename
       ! namelist /overlapped/ do_overlapped, refs_filename
       ! end of the extension for the method with the overlapped state
@@ -356,9 +359,10 @@ contains
             endif
             do pti = 1, regn
                if(regn == sufmax) then
-                  i = pti / 10
-                  q = mod(pti, 10)
-                  count_suf = '.' // numbers(i+1:i+1) // numbers(q+1:q+1)
+                  i3 = pti / 100 
+                  i2 = (pti - i3 * 100) / 10
+                  i1 = mod(pti, 10)
+                  count_suf = '.' // numbers(i3+1:i3+1) // numbers(i2+1:i2+1) // numbers(i1+1:i1+1)
                   opnfile = trim(refs_filename) // count_suf
                   inquire(file = opnfile, exist = edens_exist)
                endif
