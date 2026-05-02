@@ -64,8 +64,8 @@ module sysvars
    integer :: ermax_limit = 15000
 
    ! number of digits for suffixes of engsln, engref, and corref
-   !integer :: digits_of_suffix = 2
-   integer :: digits_of_suffix = 3 
+   integer :: digits_of_suffix = 2
+   !integer :: digits_of_suffix = 3 
 
    real, parameter :: zero = 0.0
    real :: tiny = 1.0e-8
@@ -182,8 +182,8 @@ contains
          character(len=*), intent(in) :: dirname, trunk
          logical, intent(out) :: use_tt
          integer, intent(out) :: nfiles
-         !integer, parameter :: sufmax = 99
-         integer, parameter :: sufmax = 999 
+         integer, parameter :: sufmax = 99
+         !integer, parameter :: sufmax = 999 
          character(len=3) :: file_suf
          character(len=1024) :: opnfile
          integer :: count_suf

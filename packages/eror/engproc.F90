@@ -87,8 +87,8 @@ contains
       ! start of the extension for the method with the overlapped state
       logical :: edens_exist
       character(len=1024) :: opnfile
-      !integer, parameter :: sufmax = 99, refs_io = 81
-      integer, parameter :: sufmax = 999, refs_io = 81
+      integer, parameter :: sufmax = 99, refs_io = 81
+      !integer, parameter :: sufmax = 999, refs_io = 81
       character(len=3), parameter :: suffix_tt = '.tt'
       !character(len=3) :: count_suf
       character(len=4) :: count_suf
@@ -359,10 +359,13 @@ contains
             endif
             do pti = 1, regn
                if(regn == sufmax) then
-                  i3 = pti / 100 
-                  i2 = (pti - i3 * 100) / 10
+                  !i3 = pti / 100 
+                  !i2 = (pti - i3 * 100) / 10
+                  !i1 = mod(pti, 10)
+                  i2 = pti / 10
                   i1 = mod(pti, 10)
-                  count_suf = '.' // numbers(i3+1:i3+1) // numbers(i2+1:i2+1) // numbers(i1+1:i1+1)
+                  !count_suf = '.' // numbers(i3+1:i3+1) // numbers(i2+1:i2+1) // numbers(i1+1:i1+1)
+                  count_suf = '.' // numbers(i2+1:i2+1) // numbers(i1+1:i1+1)
                   opnfile = trim(refs_filename) // count_suf
                   inquire(file = opnfile, exist = edens_exist)
                endif
@@ -673,10 +676,10 @@ contains
       use mpiproc                                                      ! MPI
       implicit none
       integer :: stnum, pti, j, k, l, iduv, division, reduce_mpikind
-      character(len=10) :: engfile
-      !character(len=9) :: engfile
-      !character(len=3) :: suffeng
-      character(len=4) :: suffeng
+      !character(len=10) :: engfile
+      !character(len=4) :: suffeng
+      character(len=9) :: engfile
+      character(len=3) :: suffeng
       integer, parameter :: eng_io = 51, cor_io = 52, slf_io = 53
       integer, parameter :: ave_io = 54, wgt_io = 55, uvr_io = 56
       real(kind=8) :: voffset_local, voffset_scale
@@ -765,12 +768,12 @@ contains
 #endif
          if(myrank == 0) then
             if(engdiv == 1) then
-               suffeng = '.ttt'
+               suffeng = '.tt'
             else
-               !j = division / 10
-               !k = mod(division, 10)
-               !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
-               write(suffeng,'(".", i3.3)') division
+               j = division / 10
+               k = mod(division, 10)
+               suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+               !write(suffeng,'(".", i3.3)') division
             endif
  
             edovlp(:) = edovlp(:) / norm_ovlp
@@ -869,15 +872,15 @@ contains
       endif
 
       if(engdiv == 1) then
-         suffeng = '.ttt'
+         suffeng = '.tt'
       else
-         !j = division / 10
-         !k = mod(division, 10)
-         !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
+         j = division / 10
+         k = mod(division, 10)
+         suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
          !j = division / 100
          !k = mod(division, 100)
          !suffeng = '.' // numbers(j+1:j+1) // numbers(k+1:k+1)
-         write(suffeng,'(".", i3.3)') division 
+         !write(suffeng,'(".", i3.3)') division 
       endif
       !
       ! storing the solute-solvent pair-energy distribution function
